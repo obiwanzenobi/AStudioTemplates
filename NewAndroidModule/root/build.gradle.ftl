@@ -1,42 +1,18 @@
-<#if !(perModuleRepositories??) || perModuleRepositories>
-buildscript {
-    repositories {
-        jcenter()
-<#if mavenUrl != "mavenCentral">
-        maven {
-            url '${mavenUrl}'
-        }
-</#if>
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:${gradlePluginVersion}'
-    }
-}
-</#if>
-<#if isInstantApp!false>
-    <#if isLibraryProject!false>
-apply plugin: 'com.android.atom'
-    <#else>
-apply plugin: 'com.android.instantapp'
-    </#if>
+<#import "./shared_macros.ftl" as shared>
+<#if isInstantApp>
+apply plugin: 'com.android.feature'
 <#else>
-    <#if isLibraryProject!false>
+  <#if isLibraryProject>
 apply plugin: 'com.android.library'
-    <#else>
+  <#else>
 apply plugin: 'com.android.application'
-    </#if>
-</#if>apply plugin: 'me.tatarka.retrolambda'
-<#if !(perModuleRepositories??) || perModuleRepositories>
+  </#if>
+</#if>
+<#if includeKotlinSupport!false>
+apply plugin: 'kotlin-android'
+</#if>
 
-repositories {
-        jcenter()
-<#if mavenUrl != "mavenCentral">
-        maven {
-            url '${mavenUrl}'
-        }
-</#if>
-}
-</#if>
+<@shared.androidConfig hasApplicationId=isApplicationProject applicationId=packageName isBaseFeature=isBaseFeature hasTests=true canHaveCpp=true/>
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -83,6 +59,9 @@ android {
 }
 
 dependencies {
+<#if includeKotlinSupport!false>
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+</#if>
 <#if isLibraryProject || !(isInstantApp!false)>
     compile fileTree(dir: 'libs', include: ['*.jar'])
 	
@@ -127,7 +106,20 @@ dependencies {
     <#if WearprojectName?has_content && NumberOfEnabledFormFactors?has_content && NumberOfEnabledFormFactors gt 1 && Wearincluded>
     wearApp project(':${WearprojectName}')
     compile 'com.google.android.gms:play-services-wearable:+'
+
     </#if>
+	<#if isInstantApp>
+  <#if isBaseFeature>
+    <#if monolithicModuleName?has_content>
+    application project(':${monolithicModuleName}')
+    <#else>
+    // TODO: Add dependency to the main application.
+    // application project(':app')
+    </#if>
+  <#else>
+    implementation project(':${baseFeatureName}')
+  </#if>
+</#if>
 <#elseif alsoCreateIapk!false>
     compile project(':${atomName}')
 </#if>

@@ -23,7 +23,7 @@ libs.supportAnnotations = "com.android.support:support-annotations:$supportLibra
 libs.supportDesign = "com.android.support:design:$supportLibraryVersion"
 libs.recyclerView = "com.android.support:recyclerview-v7:$supportLibraryVersion"
 libs.design = "com.android.support:design:$supportLibraryVersion"
-libs.constraintLayout = 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+libs.constraintLayout = 'com.android.support.constraint:constraint-layout:1.0.2'
 
 libs.dagger = "com.google.dagger:dagger:$daggerVersion"
 libs.daggerCompiler = "com.google.dagger:dagger-compiler:$daggerVersion"

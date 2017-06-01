@@ -1,7 +1,9 @@
 apply from: 'libraries.gradle'
 
 buildscript {
+<#if includeKotlinSupport!false>ext.kotlin_version = '${kotlinVersion}'</#if>
     repositories {
+	 maven { url 'https://maven.google.com' }
         jcenter()
 <#if mavenUrl != "mavenCentral">
         maven {
@@ -14,17 +16,16 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:${gradlePluginVersion}'
-		classpath 'me.tatarka:gradle-retrolambda:3.5.0'
+		<#if includeKotlinSupport!false>classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"</#if>
     }
 }
 
 allprojects {
     repositories {
+        maven { url 'https://maven.google.com' }
         jcenter()
-<#if mavenUrl != "mavenCentral">
-        maven {
-            url '${mavenUrl}'
-        }
+<#if includeKotlinSupport!false>
+        mavenCentral()
 </#if>
 <#if isInstantApp!false>
         flatDir(name: 'support', dirs: '${whSupportLibDir}')
